@@ -2,7 +2,9 @@ import {AiFillPlayCircle} from "react-icons/ai";
 import {SiEthereum} from "react-icons/si";
 import {BsInfoCircle} from 'react-icons/bs';
 import {Loader} from './'
-import React from "react";
+import React, {useContext} from "react";
+import {TransactionContext} from "@/context/TransactionContext";
+import {shortAddress} from "@/utils/shortAddress";
 
 const commonStyles = 'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
 
@@ -27,14 +29,16 @@ const Input: React.FC<InputProps> = ({placeholder, name, type, value, onChange})
 )
 
 const Welcome = () => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const connectWallet = async () => {
-    console.log('connect wallet');
-  }
+  const {connectWallet, currentAccount, formData, loading, handleChange, sendTransaction}= useContext(TransactionContext);
+
 
   const handleSubmit = async () => {
-    console.log('submit');
+    const {addressTo, amount, keyword, message} = formData;
+
+    if(!addressTo || !amount || !keyword || !message) return alert('Please fill all fields');
+    const transactionContract = await sendTransaction();
   }
+
 
   return <div className={'flex w-full justify-center items-center'}>
     <div className={'flex mf:flex-row flex-col items-start justify-between md:p-20 py-12  px-4'}>
@@ -43,13 +47,15 @@ const Welcome = () => {
         <p className={'text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base'}>
           Exprole the world of crypto with <span className={'text-blue-500'}>CryptoX</span> and send crypto to your loved ones.
         </p>
-        <button
-        type={'button'}
-        onClick={connectWallet}
-        className={'flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]'}
-        >
-        <p className={'text-white text-base font-semibold'}>Connect Wallet</p>
-        </button>
+        {!currentAccount && (
+            <button
+                type={'button'}
+                onClick={connectWallet}
+                className={'flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]'}
+            >
+              <p className={'text-white text-base font-semibold'}>Connect Wallet</p>
+            </button>
+        )}
         <div className={'grid sm:grid-cols-3 grid-cols-2 w-full mt-10'}>
           <div className={`rounded-tl-2xl ${commonStyles}`}>
             Reliability
@@ -82,7 +88,7 @@ const Welcome = () => {
             </div>
             <div>
               <p className={'text-white font-light text-sm'}>
-                0xcccew...2231dw
+                {currentAccount ? shortAddress(currentAccount) : 'connect wallet'}
               </p>
               <p className={'text-white font-bold text-lg'}>
                 Ethereum
@@ -91,12 +97,12 @@ const Welcome = () => {
           </div>
         </div>
         <div className={'p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism'}>
-            <Input placeholder={'Address To'} name={'addressTo'} type={'text'} value={''} onChange={() => {}} />
-            <Input placeholder={'Amount (ETH)'} name={'amount'} type={'number'} value={''} onChange={() => {}} />
-            <Input placeholder={'Keyword (GIF)'} name={'keyword'} type={'text'} value={''} onChange={() => {}} />
-            <Input placeholder={'Enter Message'} name={'message'} type={'text'} value={''} onChange={() => {}} />
+            <Input placeholder={'Address To'} name={'addressTo'} type={'text'} value={formData.addressTo} onChange={handleChange} />
+            <Input placeholder={'Amount (ETH)'} name={'amount'} type={'text'} value={formData.amount} onChange={handleChange} />
+            <Input placeholder={'Keyword (GIF)'} name={'keyword'} type={'text'} value={formData.keyword} onChange={handleChange} />
+            <Input placeholder={'Enter Message'} name={'message'} type={'text'} value={formData.message} onChange={handleChange} />
             <div className={'h-[1px] w-full bg-gray-400 my-2'} />
-              {isLoading ? (
+              {loading ? (
                   <Loader />
               ) : (
                     <button
