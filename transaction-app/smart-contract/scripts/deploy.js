@@ -4,9 +4,10 @@ const hre = require("hardhat");
 // import hre from 'hardhat';
 
 const main = async () => {
+  const gasLimit = 4000000;
   const Transactions = await hre.ethers.getContractFactory('Transactions');
-  const transactions = await Transactions.deploy()
-  
+  const transactions = await Transactions.deploy({gasLimit})
+
   await transactions.deployed();
 
   console.log("Transactions deployed to: ", transactions.address);
