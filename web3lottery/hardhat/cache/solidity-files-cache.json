@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/macbookpro/Desktop/crypto-apps/web3lottery/hardhat/contracts/Raffle.sol": {
-      "lastModificationDate": 1686649694860,
-      "contentHash": "16158a4c3d2bc322b366e7159312a057",
+      "lastModificationDate": 1686651673844,
+      "contentHash": "3c3f0cac876a7b5cd85f5cb3b329782c",
       "sourceName": "contracts/Raffle.sol",
       "solcConfig": {
         "version": "0.8.18",

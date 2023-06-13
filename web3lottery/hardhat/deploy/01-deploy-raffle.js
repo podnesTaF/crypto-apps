@@ -3,7 +3,7 @@ const {
   developmentChains,
   networkConfig,
 } = require("../helper-hardhat-config");
-const { verify } = require("../helper-hardhat-config");
+const { verify } = require("../utils/verify");
 
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2");
 
@@ -57,6 +57,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     waitConfirmations: network.config.blockconfirmations || 1,
   });
 
+  log(args);
+
   if (developmentChains.includes(network.name)) {
     const vrfCoordinatorV2Mock = await ethers.getContract(
       "VRFCoordinatorV2Mock"
@@ -66,7 +68,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_KEY) {
     log("ferifying contract on Etherscan");
-    await verify(raffle.address, network.name);
+    await verify(raffle.address, args);
   }
 };
 
